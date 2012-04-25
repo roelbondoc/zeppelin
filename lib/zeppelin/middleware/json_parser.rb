@@ -22,7 +22,7 @@ class Zeppelin
       private
 
       def parse_response(env)
-        env[:body] = MultiJson.decode(env[:body])
+        env[:body] = MultiJson.load(env[:body])
       end
 
       def process_content_type?(env)
