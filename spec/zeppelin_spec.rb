@@ -26,7 +26,7 @@ describe Zeppelin do
 
     it { subject.connection.host.should eq('go.urbanairship.com') }
 
-    it { subject.connection.builder.handlers.should include(Faraday::Adapter::NetHttp) }
+    it { subject.connection.builder.handlers.should include(Faraday::Adapter::Patron) }
 
     it { subject.connection.builder.handlers.should include(Faraday::Request::JSON) }
 
@@ -659,7 +659,7 @@ describe Zeppelin do
   end
 
   def stub_requests
-    subject.connection.builder.handlers.delete(Faraday::Adapter::NetHttp)
+    subject.connection.builder.handlers.delete(Faraday::Adapter::Patron)
     subject.connection.adapter :test do |stubs|
       yield(stubs)
     end

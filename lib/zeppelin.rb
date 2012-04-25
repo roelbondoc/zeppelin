@@ -310,7 +310,7 @@ class Zeppelin
       builder.use Zeppelin::Middleware::JsonParser
       builder.use Zeppelin::Middleware::ResponseRaiseError
 
-      builder.adapter :net_http
+      builder.use Faraday::Adapter::Patron
     end
 
     conn.basic_auth(@application_key, @application_master_secret)
