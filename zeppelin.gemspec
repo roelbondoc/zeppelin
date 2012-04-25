@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'faraday',    '~> 0.7.6'
   s.add_dependency 'multi_json', '~> 1.1'
+  s.add_dependency 'patron',     '~> 0.4.18'
 
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rake'
