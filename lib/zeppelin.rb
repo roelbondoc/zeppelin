@@ -356,7 +356,11 @@ class Zeppelin
   end
 
   def perform_request(method, uri, *args)
-    connection.send(method, uri, *args)
+    begin
+      connection.send(method, uri, *args)
+    rescue Faraday::Error::TimeoutError => e
+      raise Zeppelin::ClientError, e.message
+    end
   end
 
   def query_string(query)
