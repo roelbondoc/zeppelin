@@ -13,6 +13,11 @@ class Zeppelin
   BROADCAST_URI = '/api/push/broadcast/'
   JSON_HEADERS = { 'Content-Type' => 'application/json' }
 
+  GET_REQUEST    = :get
+  POST_REQUEST   = :post
+  PUT_REQUEST    = :put
+  DELETE_REQUEST = :delete
+
   attr_reader :application_key, :application_master_secret, :options
 
   # @param [String] application_key your Urban Airship Application Key
@@ -320,20 +325,20 @@ class Zeppelin
 
   def put_request(uri, payload={})
     if !(payload.nil? || payload.empty?)
-      response = connection.put(uri, payload, JSON_HEADERS)
+      response = perform_request(PUT_REQUEST, uri, payload, JSON_HEADERS)
     else
-      response = connection.put(uri)
+      response = perform_request(PUT_REQUEST, uri)
     end
 
     response.success?
   end
 
   def delete_request(uri)
-    connection.delete(uri).success?
+    perform_request(DELETE_REQUEST, uri).success?
   end
 
   def get_request(uri)
-    response = connection.get(uri)
+    response = perform_request(GET_REQUEST, uri)
     response.body if response.success?
   end
 
@@ -347,7 +352,11 @@ class Zeppelin
   end
 
   def post_request(uri, payload)
-    connection.post(uri, payload, JSON_HEADERS).success?
+    perform_request(POST_REQUEST, uri, payload, JSON_HEADERS).success?
+  end
+
+  def perform_request(method, uri, *args)
+    connection.send(method, uri, *args)
   end
 
   def query_string(query)
