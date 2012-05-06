@@ -9,7 +9,9 @@ describe Zeppelin do
 
   let(:options) { { :ssl => { :ca_path => '/dev/null' } } }
 
-  let(:timeout_error) { Faraday::Error::TimeoutError.new('timeout') }
+  let(:timeout_error) { Faraday::Error::TimeoutError.new('timeout error') }
+
+  let(:patron_error)  { Patron::Error.new('patron error') }
 
   let(:connection) { subject.connection }
 
@@ -79,6 +81,14 @@ describe Zeppelin do
         subject.register_device_token(device_token)
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:put).and_raise(patron_error)
+
+      expect {
+        subject.register_device_token(device_token)
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#device_token' do
@@ -111,6 +121,14 @@ describe Zeppelin do
         subject.device_token(device_token)
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:get).and_raise(patron_error)
+
+      expect {
+        subject.device_token(device_token)
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#delete_device_token' do
@@ -136,6 +154,14 @@ describe Zeppelin do
 
     it 'raises an error when a timeout error occurs' do
       connection.stub(:delete).and_raise(timeout_error)
+
+      expect {
+        subject.delete_device_token(device_token)
+      }.to raise_error(Zeppelin::ClientError)
+    end
+
+    it 'raises an error when a patron adapter occurs' do
+      connection.stub(:delete).and_raise(patron_error)
 
       expect {
         subject.delete_device_token(device_token)
@@ -214,6 +240,14 @@ describe Zeppelin do
         subject.device_tokens
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:get).and_raise(patron_error)
+
+      expect {
+        subject.device_tokens
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#register_apid' do
@@ -254,6 +288,14 @@ describe Zeppelin do
         subject.register_apid(device_token)
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:put).and_raise(patron_error)
+
+      expect {
+        subject.register_apid(device_token)
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#apid' do
@@ -281,6 +323,14 @@ describe Zeppelin do
 
     it 'raises an error when a timeout error occurs' do
       connection.stub(:get).and_raise(timeout_error)
+
+      expect {
+        subject.apid(device_token)
+      }.to raise_error(Zeppelin::ClientError)
+    end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:get).and_raise(patron_error)
 
       expect {
         subject.apid(device_token)
@@ -316,6 +366,15 @@ describe Zeppelin do
         subject.delete_apid(device_token)
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:delete).and_raise(patron_error)
+
+      expect {
+        subject.delete_apid(device_token)
+      }.to raise_error(Zeppelin::ClientError)
+    end
+
   end
 
   describe '#apids' do
@@ -385,6 +444,14 @@ describe Zeppelin do
         subject.apids
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:get).and_raise(patron_error)
+
+      expect {
+        subject.apids
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#push' do
@@ -412,6 +479,14 @@ describe Zeppelin do
 
     it 'raises an error when a timeout error occurs' do
       connection.stub(:post).and_raise(timeout_error)
+
+      expect {
+        subject.push({})
+      }.to raise_error(Zeppelin::ClientError)
+    end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:post).and_raise(patron_error)
 
       expect {
         subject.push({})
@@ -463,6 +538,14 @@ describe Zeppelin do
         subject.batch_push({}, {})
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:post).and_raise(patron_error)
+
+      expect {
+        subject.batch_push({}, {})
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#broadcast' do
@@ -490,6 +573,14 @@ describe Zeppelin do
 
     it 'raises an error when a timeout error occurs' do
       connection.stub(:post).and_raise(timeout_error)
+
+      expect {
+        subject.broadcast({})
+      }.to raise_error(Zeppelin::ClientError)
+    end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:post).and_raise(patron_error)
 
       expect {
         subject.broadcast({})
@@ -529,6 +620,14 @@ describe Zeppelin do
         subject.feedback(since)
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:get).and_raise(patron_error)
+
+      expect {
+        subject.feedback(since)
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#modify_device_token_on_tag' do
@@ -551,6 +650,14 @@ describe Zeppelin do
         subject.modify_device_tokens_on_tag(tag_name, {'device_tokens' => { 'add' => [device_token] }})
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:post).and_raise(patron_error)
+
+      expect {
+        subject.modify_device_tokens_on_tag(tag_name, {'device_tokens' => { 'add' => [device_token] }})
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#add_tag' do
@@ -566,6 +673,14 @@ describe Zeppelin do
 
     it 'raises an error when a timeout error occurs' do
       connection.stub(:put).and_raise(timeout_error)
+
+      expect {
+        subject.add_tag(tag_name)
+      }.to raise_error(Zeppelin::ClientError)
+    end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:put).and_raise(patron_error)
 
       expect {
         subject.add_tag(tag_name)
@@ -596,6 +711,14 @@ describe Zeppelin do
 
     it 'raises an error when a timeout error occurs' do
       connection.stub(:delete).and_raise(timeout_error)
+
+      expect {
+        subject.remove_tag(tag_name)
+      }.to raise_error(Zeppelin::ClientError)
+    end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:delete).and_raise(patron_error)
 
       expect {
         subject.remove_tag(tag_name)
@@ -633,6 +756,14 @@ describe Zeppelin do
         subject.device_tags(device_token)
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:get).and_raise(patron_error)
+
+      expect {
+        subject.device_tags(device_token)
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#add_tag_to_device' do
@@ -660,6 +791,14 @@ describe Zeppelin do
 
     it 'raises an error when a timeout error occurs' do
       connection.stub(:put).and_raise(timeout_error)
+
+      expect {
+        subject.add_tag_to_device(device_token, tag_name)
+      }.to raise_error(Zeppelin::ClientError)
+    end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:put).and_raise(patron_error)
 
       expect {
         subject.add_tag_to_device(device_token, tag_name)
@@ -697,6 +836,14 @@ describe Zeppelin do
         subject.remove_tag_from_device(device_token, tag_name)
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:delete).and_raise(patron_error)
+
+      expect {
+        subject.remove_tag_from_device(device_token, tag_name)
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#tags' do
@@ -729,6 +876,14 @@ describe Zeppelin do
         subject.tags
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:get).and_raise(patron_error)
+
+      expect {
+        subject.tags
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#register_pin' do
@@ -756,6 +911,14 @@ describe Zeppelin do
 
     it 'raises an error when a timeout error occurs' do
       connection.stub(:put).and_raise(timeout_error)
+
+      expect {
+        subject.register_pin(pin)
+      }.to raise_error(Zeppelin::ClientError)
+    end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:put).and_raise(patron_error)
 
       expect {
         subject.register_pin(pin)
@@ -804,6 +967,14 @@ describe Zeppelin do
         subject.pin(pin)
       }.to raise_error(Zeppelin::ClientError)
     end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:get).and_raise(patron_error)
+
+      expect {
+        subject.pin(pin)
+      }.to raise_error(Zeppelin::ClientError)
+    end
   end
 
   describe '#delete_pin' do
@@ -831,6 +1002,14 @@ describe Zeppelin do
 
     it 'raises an error when a timeout error occurs' do
       connection.stub(:delete).and_raise(timeout_error)
+
+      expect {
+        subject.delete_pin(pin)
+      }.to raise_error(Zeppelin::ClientError)
+    end
+
+    it 'raises an error when a patron adapter error occurs' do
+      connection.stub(:delete).and_raise(patron_error)
 
       expect {
         subject.delete_pin(pin)
